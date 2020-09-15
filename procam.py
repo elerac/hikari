@@ -1,10 +1,12 @@
+"""
+プロジェクタ&カメラを動かす．
+例として，Nayarらの高周波照明を投影して，直接成分と大域成分を分離する．
+"""
 # 外部モジュール
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 # 自作ソフトウェア関連
 import structuredlight as sl
-import polanalyser as pa
 # 自作ハードウェア関連
 import PySpin
 import EasyPySpin
