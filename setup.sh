@@ -1,6 +1,5 @@
-git clone https://github.com/elerac/EasyPySpin.git
-git clone https://github.com/elerac/structured_light.git
-git clone https://github.com/elerac/fullscreen.git
-git clone https://github.com/elerac/PolarizationImaging.git
-git clone https://github.com/elerac/AutomaticPolarizer.git
-git clone https://github.com/2-propanol/aries_python.git
+pip3 install git+https://github.com/elerac/EasyPySpin
+pip3 install git+https://github.com/elerac/structuredlight
+pip3 install git+https://github.com/elerac/polanalyser
+pip3 install git+https://github.com/elerac/autopolarizer
+pip3 install git+https://github.com/2-propanol/aries_python
