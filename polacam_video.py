@@ -1,3 +1,6 @@
+"""
+偏光カメラ(FLIR, BFS-U3-51S5P-C)で撮影した偏光画像をDoLPやAoLPに変換して表示する
+"""
 # 外部モジュール
 import cv2
 import numpy as np
