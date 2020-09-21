@@ -14,7 +14,7 @@ import polanalyser as pa
 # 自作ハードウェア関連
 import PySpin
 import EasyPySpin
-from libs.fullscreen import FullScreen
+from fullscreen import FullScreen
 from autopolarizer import AutoPolarizer
 
 def main():
@@ -30,7 +30,7 @@ def main():
     projector = FullScreen(1)
     img_white = 255*np.ones((projector.height, projector.width), dtype=np.uint8)
     projector.imshow(img_white)
-    cv2.waitKey(100)
+    cv2.waitKey(500)
 
     # 光源側の偏光板設定
     polarizer = AutoPolarizer("/dev/tty.usbserial-FTRWB1RN")
