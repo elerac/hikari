@@ -10,7 +10,7 @@ import structuredlight as sl
 # 自作ハードウェア関連
 import PySpin
 import EasyPySpin
-from libs import FullScreen
+from fullscreen import FullScreen
 
 def main():
     # カメラの設定
