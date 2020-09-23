@@ -24,25 +24,24 @@ def main():
     cap.set(cv2.CAP_PROP_EXPOSURE, 10000)
     cap.set(cv2.CAP_PROP_GAIN, 5)
     #cap.set(cv2.CAP_PROP_FPS, 30)
-    cap.average_num = 4 # 平均化させる枚数，ノイズ耐性を上げる
+    cap.average_num = 2 # 平均化させる枚数，ノイズ耐性を上げる
     
     # プロジェクタの設定
     projector = FullScreen(1)
-    img_white = 255*np.ones((projector.height, projector.width), dtype=np.uint8)
-    projector.imshow(img_white)
+    projector.imshow(255)
     cv2.waitKey(500)
 
     # 光源側の偏光板設定
     polarizer = AutoPolarizer("/dev/tty.usbserial-FTRWB1RN")
     polarizer.set_speed()
     polarizer.reset()
-    polarizer.flip_front = True
+    polarizer.flip_front = False
     
     # 撮影する光源とカメラの偏光板角度の組み合わせ
     # 光源側は自由に設定可能
     # カメラ側は偏光カメラなので固定
     light_angles_sequence  = [0, np.pi/4, np.pi/2, np.pi*3/4]
-    camera_angles_sequence = [0, np.pi/4, np.pi/2, np.pi*3/4]
+    camera_angles_sequence = [0, np.pi*3/4, np.pi/2, np.pi/4]
     
     imlist = []
     anglist_light  = []
@@ -56,10 +55,10 @@ def main():
         # 少し待ってから撮影
         cv2.waitKey(100)
         #ret, frame = cap.read()
-        ret, frame = cap.readHDR(500, 10000, num=6)
+        ret, frame = cap.readHDR(10, 60000, t_ref=15000)
         
         # 偏光画像のデモザイキング
-        img_demosaiced = pa.IMX250MZR.demosaicing(frame)
+        img_demosaiced = pa.demosaicing(frame)
 
         for img, ang_cam in zip( cv2.split(img_demosaiced), camera_angles_sequence):
             name = "fname_l{0}_c{1}.exr".format(int(degrees(radians)), int(degrees(ang_cam)))
@@ -68,7 +67,7 @@ def main():
         # 撮影したの画像と角度情報をリストに追加
         imlist += cv2.split(img_demosaiced)
         anglist_light  += [radians]*4
-        anglist_camera += [np.pi-rad for rad in camera_angles_sequence]
+        anglist_camera += camera_angles_sequence
     
     cap.release()
     
@@ -84,6 +83,8 @@ def main():
     img_m31, img_m32, img_m33  = cv2.split(img_mueller)
 
     np.save("img_mueller.npy", img_mueller)
+    
+    pa.plotMueller("img_mueller.png", img_mueller, vabsmax=0.5)
 
 if __name__=="__main__":
     main()
