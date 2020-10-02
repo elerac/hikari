@@ -9,6 +9,7 @@
 import cv2
 import numpy as np
 from math import radians, degrees
+import os
 # 自作ソフトウェア関連
 import polanalyser as pa
 # 自作ハードウェア関連
@@ -18,18 +19,27 @@ from fullscreen import FullScreen
 from autopolarizer import AutoPolarizer
 
 def main():
+    # 出力するフォルダ名
+    dir_name = "alumi"
+    os.makedirs(dir_name, exist_ok=True)
+
     # カメラの設定
     cap = EasyPySpin.VideoCaptureEX(0)
+    #cap.cam.AdcBitDepth.SetValue(PySpin.AdcBitDepth_Bit12)
+    #cap.cam.PixelFormat.SetValue(PySpin.PixelFormat_Mono16)
     cap.set(cv2.CAP_PROP_GAMMA, 1.0)
     cap.set(cv2.CAP_PROP_EXPOSURE, 10000)
-    cap.set(cv2.CAP_PROP_GAIN, 5)
-    #cap.set(cv2.CAP_PROP_FPS, 30)
-    cap.average_num = 2 # 平均化させる枚数，ノイズ耐性を上げる
+    cap.set(cv2.CAP_PROP_GAIN, 0)
+    cap.average_num = 28 # 平均化させる枚数，ノイズ耐性を上げる
+    t_min = 8
+    t_max = 300000
+    t_ref = 30000
+    num = 16
     
     # プロジェクタの設定
     projector = FullScreen(1)
     projector.imshow(255)
-    cv2.waitKey(500)
+    cv2.waitKey(600)
 
     # 光源側の偏光板設定
     polarizer = AutoPolarizer("/dev/tty.usbserial-FTRWB1RN")
@@ -43,30 +53,35 @@ def main():
     light_angles_sequence  = [0, np.pi/4, np.pi/2, np.pi*3/4]
     camera_angles_sequence = [0, np.pi*3/4, np.pi/2, np.pi/4]
     
+    print("Capture start")
     imlist = []
     anglist_light  = []
     anglist_camera = []
-    for i, radians in enumerate(light_angles_sequence):
+    for i, radians_light in enumerate(light_angles_sequence):
         # 偏光板を回転
-        polarizer.degree = degrees(radians)
+        polarizer.degree = degrees(radians_light)
 
-        print("{0}/{1}: {2}".format(i+1, len(light_angles_sequence), polarizer.degree))
+        print(f"  {i+1}/{len(light_angles_sequence)}: {polarizer.degree}")
 
         # 少し待ってから撮影
-        cv2.waitKey(100)
-        #ret, frame = cap.read()
-        ret, frame = cap.readHDR(10, 60000, t_ref=15000)
+        cv2.waitKey(500)
+        ret, frame = cap.readHDR(t_min, t_max, num=num, t_ref=t_ref)
         
         # 偏光画像のデモザイキング
         img_demosaiced = pa.demosaicing(frame)
 
-        for img, ang_cam in zip( cv2.split(img_demosaiced), camera_angles_sequence):
-            name = "fname_l{0}_c{1}.exr".format(int(degrees(radians)), int(degrees(ang_cam)))
+        for img, radians_camera in zip( cv2.split(img_demosaiced), camera_angles_sequence):
+            # OpenEXR画像の書き出し
+            name = f"{dir_name}/{dir_name}_l{int(degrees(radians_light))}_c{int(degrees(radians_camera))}.exr"
             cv2.imwrite(name, img.astype(np.float32))
+            # JPEG画像の書き出し
+            os.makedirs(f"{dir_name}/JPG", exist_ok=True)
+            name = f"{dir_name}/JPG/{dir_name}_l{int(degrees(radians_light))}_c{int(degrees(radians_camera))}.jpg"
+            cv2.imwrite(name, (img*255).astype(np.uint8))
         
         # 撮影したの画像と角度情報をリストに追加
         imlist += cv2.split(img_demosaiced)
-        anglist_light  += [radians]*4
+        anglist_light  += [radians_light]*4
         anglist_camera += camera_angles_sequence
     
     cap.release()
@@ -77,14 +92,17 @@ def main():
     angles_camera = np.array(anglist_camera)
 
     # ミュラー行列を求める
+    print("Calculate the Mueller matrix")
     img_mueller = pa.calcMueller(images, angles_light, angles_camera)
     img_m11, img_m12, img_m13,\
     img_m21, img_m22, img_m23,\
     img_m31, img_m32, img_m33  = cv2.split(img_mueller)
 
-    np.save("img_mueller.npy", img_mueller)
+    np.save(f"{dir_name}/{dir_name}_img_mueller.npy", img_mueller)
     
-    pa.plotMueller("img_mueller.png", img_mueller, vabsmax=0.5)
+    # 求めたミュラー行列をプロットして保存
+    print("Plot the Mueller matrix")
+    pa.plotMueller(f"{dir_name}/{dir_name}_plot_mueller.png", img_mueller, vabsmax=0.5)
 
 if __name__=="__main__":
     main()
