@@ -29,25 +29,24 @@ def plotStokesArrow(filename: str, stokes_vector: np.ndarray,
     dpi : int
         出力するサイズ
     """
-
-    S = stokes_vector
-    S = S/S[0] # 正規化
-    DoLP = np.sqrt(S[1]**2+S[2]**2)/S[0] # 0~1
-    AoLP = np.mod(0.5*np.arctan2(S[2], S[1]), np.pi) # 0~np.pi
+    
+    S0, S1, S2 = stokes_vector
+    DoLP = np.sqrt(S1**2+S2**2)/S0 # 0~1
+    AoLP = np.mod(0.5*np.arctan2(S2, S1), np.pi) # 0~np.pi
     
     # 回転行列を定義
     R = lambda theta: np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
     
     # 矢印を描画
-    for theta in np.linspace(0, np.pi/2, num=arrow_num+1):
+    for theta in np.linspace(0, np.pi/2, num=arrow_num+1)[:-1]:
         # 始点
         x1 = np.cos(2*theta)
         y1 = (1-DoLP)*np.sin(2*theta)
         
         # 終点
-        x2 = np.cos(2*theta+np.pi)
-        y2 = (1-DoLP)*np.sin(2*theta+np.pi)
-        
+        x2 = -x1
+        y2 = -y1
+
         # 点を回転
         x, y = R(AoLP) @ np.array([[x1, y1], [x2, y2]]).T
         
@@ -57,7 +56,7 @@ def plotStokesArrow(filename: str, stokes_vector: np.ndarray,
 
     # 矢印を囲む楕円を描画
     if draw_ellipse:
-        theta_sequence = np.linspace(0, np.pi, num=200)
+        theta_sequence = np.linspace(0, np.pi, num=360)
         x = np.cos(2*theta_sequence)
         y = (1-DoLP)*np.sin(2*theta_sequence)
         p = R(AoLP) @ np.array([x, y])
