@@ -72,6 +72,7 @@ def calibrateCamera(objpoints: np.ndarray, imgpoints: np.ndarray) -> np.ndarray:
 def calibrateCamera1D(objpoints: np.ndarray, imgpoints: np.ndarray) -> np.ndarray:
     """
     Calibrate camera 1D
+    1D camera matrix(2x4) is defined as the original camera matrix(3x4) with the y-axis removed
 
     Parameters
     ----------
@@ -114,25 +115,46 @@ def calibrateCamera1D(objpoints: np.ndarray, imgpoints: np.ndarray) -> np.ndarra
     return camera_matrix_1d
 
 def main():
+    import cv2
     N = 20
+
+    # 実世界の3次元座標
     objpoints = np.random.rand(N, 3) # (N, 3)
     
-    camera_matrix = np.random.rand(3, 4) # (3, 4)
-    camera_matrix[-1, -1] = 1 # set c34=1
+    # 適当なカメラ行列を作る
+    #camera_matrix = np.random.rand(3, 4) # (3, 4)
+    #camera_matrix[-1, -1] = 1 # set c34=1
+    f = 100
+    c = [300, 200]
+    K = np.array([[f, 0, 300],
+                  [0, f, 200],
+                  [0, 0, 1]])
+    R = np.random.rand(3, 3)
+    t = np.random.rand(3) * 10
+    Rt = np.vstack([R.T, t]).T
+    camera_matrix = K @ Rt
     print("Camera matrix GT:\n", camera_matrix)
     
+    # カメラに3次元点を投影
     X = cvtHeterogeneousToHomogeneous(objpoints)
     noise = np.random.normal(0, 0.5, (N, 3)) * 0.001
     noise = 0
     x = (camera_matrix @ X.T).T + noise
-   
+    
+    # 点が画像中に投影された2次元座標
     img_points = x[:,:2] / np.expand_dims(x[:,2], 1) # (N, 2)
     
+    # 対応した点からキャリブレーション
     camera_matrix = calibrateCamera(objpoints, img_points)
-    print("Camera matrix Estimate:\n", camera_matrix)
-
+    print("Camera matrix estimate:\n", camera_matrix)
+    
     camera_matrix_1d = calibrateCamera1D(objpoints, img_points[:,0])
-    print("Camera matrix 1D Estimate:\n", camera_matrix_1d)
-
+    print("Camera matrix 1D estimate:\n", camera_matrix_1d)
+    
+    # 結果を保存
+    fs = cv2.FileStorage('calibration_result.xml', cv2.FILE_STORAGE_WRITE)
+    fs.write('camera_matrix', camera_matrix)
+    fs.release()
+    
 if __name__=="__main__":
     main()
