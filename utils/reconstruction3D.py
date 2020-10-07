@@ -4,7 +4,7 @@
 import numpy as np
 import os
 
-def write_ply(filename: str, points_3D: np.ndarray):
+def write_ply(filename: str, points_3D: np.ndarray) -> None:
     """
     Export 3D points to ply file
 
