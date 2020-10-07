@@ -40,8 +40,8 @@ def plotStokesArrow(filename: str, stokes_vector: np.ndarray,
     # 矢印を描画
     for theta in np.linspace(0, np.pi/2, num=arrow_num+1)[:-1]:
         # 始点
-        x1 = np.cos(2*theta)
-        y1 = (1-DoLP)*np.sin(2*theta)
+        x1 = S0 * np.cos(2*theta)
+        y1 = S0 * (1-DoLP) * np.sin(2*theta)
         
         # 終点
         x2 = -x1
@@ -57,8 +57,8 @@ def plotStokesArrow(filename: str, stokes_vector: np.ndarray,
     # 矢印を囲む楕円を描画
     if draw_ellipse:
         theta_sequence = np.linspace(0, np.pi, num=360)
-        x = np.cos(2*theta_sequence)
-        y = (1-DoLP)*np.sin(2*theta_sequence)
+        x = S0 * np.cos(2*theta_sequence)
+        y = S0 * (1-DoLP) * np.sin(2*theta_sequence)
         p = R(AoLP) @ np.array([x, y])
         plt.plot(p[0], p[1], c=ellipse_color, lw=0.5)
     
