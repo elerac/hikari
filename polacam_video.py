@@ -25,7 +25,7 @@ def main():
         ret, frame = cap.read()
         
         # 偏光画像のデモザイキング
-        img_demosaiced = pa.IMX250MZR.demosaicing(frame)
+        img_demosaiced = pa.demosaicing(frame)
 
         # ストークスベクトルを求める
         radians = np.array([0, np.pi/4, np.pi/2, np.pi*3/4])
