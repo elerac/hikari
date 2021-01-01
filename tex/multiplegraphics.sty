@@ -1,0 +1,61 @@
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{xfp}
+
+\newcounter{numberoffigures}
+\newcommand{\includemultiplegraphics}[2][1.0]{
+    % Arrange multiple figures horizontally.
+    % 複数の図を水平方向に均等に並べる．
+    %
+    % Parameters
+    % ----------
+    % #1 : scale, optional
+    %   Scale of image. Between 0.0 and 1.0.
+    %   Default value is 1.0.
+    % #2 : figuresinfo
+    %   Information on multiple figures.
+    %   It consists of the image {file name}, {subcaption name}, and {label name}.
+    %
+    % Notes
+    % -----
+    % `graphicx`, `subcaption`, `tikz` and `xfp` packages are required.
+    %
+    % References
+    % ----------
+    % [1] Automated sub-figure generation using a loop in LaTeX, https://texblog.org/2015/10/09/automated-sub-figure-generation-using-a-loop-in-latex/.
+    %
+    % Examples
+    % --------
+    % \begin{figure}
+    %     \newcommand{\figuresinfo}{
+    %     {figures/image1.png}/{name1}/{fig:name1},
+    %     {figures/image2.png}/{name2}/{fig:name2},
+    %     {figures/image3.png}/{name3}/{fig:name3}}
+    %
+    %     \includemultiplegraphics{\figuresinfo}
+    %     %\includemultiplegraphics[0.5]{\figuresinfo} % Scale the figure by half.
+    %     \caption{Figures}
+    %     \label{fig:myfigures}
+    % \end{figure}
+    % 
+    % Fig.\ref{fig:myfigures} shows multiple images arranged horizontally. 
+    % In particular, Fig.\ref{fig:myfigures}\subref{fig:name1} shows "figures/image1.png".
+    % 
+
+    % Count up the number of figures
+    \setcounter{numberoffigures}{0}
+    \foreach \tmp in #2 {%
+        \stepcounter{numberoffigures}
+    }
+    
+    % Arrange figures
+    \foreach \myfilename / \mysubcaption / \mylabel in #2 {%
+        \begin{subfigure}[b]{\fpeval{0.99/\value{numberoffigures}}\hsize} % 0.99 prevents error "Underfull \hbox ..."
+            \centering
+            \includegraphics[width=#1\hsize]{\myfilename}
+            \subcaption{\mysubcaption}
+            \label{\mylabel}
+        \end{subfigure}%
+    }
+}
