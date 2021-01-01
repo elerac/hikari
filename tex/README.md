@@ -2,7 +2,7 @@
 
 ## [multiplegraphics.sty](https://github.com/elerac/hikari/blob/master/tex/multiplegraphics.sty)
 
-[example-multiplegraphics.tex](https://github.com/elerac/hikari/blob/master/tex/example-multiplegraphics.tex)
+[example-multiplegraphics.tex](https://github.com/elerac/hikari/blob/master/tex/example-multiplegraphics.tex) -> [example_multiplegraphics.pdf](https://github.com/elerac/hikari/blob/master/tex/documents/example_multiplegraphics.pdf)
 
 ```tex
 Fig.\ref{fig:myfigures} shows multiple images arranged horizontally. 
