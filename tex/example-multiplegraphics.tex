@@ -22,12 +22,10 @@ Fig.\ref{fig:myfigures} shows multiple images arranged horizontally.
 In particular, Fig.\ref{fig:myfigures}\subref{fig:name1} shows "figures/image1.png".
 
 \begin{figure}[htbp]
-    \newcommand{\figuresinfo}{
+    \includemultiplegraphics{{
     {figures/image1.png}/{name1}/{fig:name1},
     {figures/image2.png}/{name2}/{fig:name2},
-    {figures/image3.png}/{name3}/{fig:name3}} % {file name}/{subcaption name}/{label name}
-    
-    \includemultiplegraphics{\figuresinfo}
+    {figures/image3.png}/{name3}/{fig:name3}}} % {file name}/{subcaption name}/{label name}
     \caption{Figures}
     \label{fig:myfigures}
 \end{figure}
@@ -37,12 +35,10 @@ In particular, Fig.\ref{fig:myfigures}\subref{fig:name1} shows "figures/image1.p
 Scale the figure by half.
 
 \begin{figure}[htbp]
-    \newcommand{\figuresinfo}{
+    \includemultiplegraphics[0.5]{{
     {figures/image1.png}/{name1}/{fig:name1-half},
     {figures/image2.png}/{name2}/{fig:name2-half},
-    {figures/image3.png}/{name3}/{fig:name3-half}}
-    
-    \includemultiplegraphics[0.5]{\figuresinfo}
+    {figures/image3.png}/{name3}/{fig:name3-half}}}
     \caption{Figures}
     \label{fig:myfigures-half}
 \end{figure}
