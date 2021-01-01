@@ -2,6 +2,8 @@
 
 ## [multiplegraphics.sty](https://github.com/elerac/hikari/blob/master/tex/multiplegraphics.sty)
 
+[example-multiplegraphics.tex](https://github.com/elerac/hikari/blob/master/tex/example-multiplegraphics.tex)
+
 ```tex
 Fig.\ref{fig:myfigures} shows multiple images arranged horizontally. 
 In particular, Fig.\ref{fig:myfigures}\subref{fig:name1} shows "figures/image1.png".
