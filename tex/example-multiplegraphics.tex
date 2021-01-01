@@ -46,4 +46,29 @@ Scale the figure by half.
     \caption{Figures}
 \end{figure}
 
+\newpage
+
+\subsection{Matrix}
+Arrange the figures in a matrix.
+
+\begin{figure}[htbp]
+    \includemultiplegraphics[0.9]{{
+    {figures/image1.png}/{name1}/{fig:name1-mat},
+    {figures/image2.png}/{name2}/{fig:name2-mat},
+    {figures/image3.png}/{name3}/{fig:name3-mat}}}\vspace{3pt}
+    
+    \includemultiplegraphics[0.9]{{
+    {figures/image1.png}/{name4}/{fig:name4-mat},
+    {figures/image2.png}/{name5}/{fig:name5-mat},
+    {figures/image3.png}/{name6}/{fig:name6-mat}}}\vspace{3pt}
+    
+    \includemultiplegraphics[0.9]{{
+    {figures/image1.png}/{name7}/{fig:name7-mat},
+    {figures/image2.png}/{name8}/{fig:name8-mat},
+    {figures/image3.png}/{name9}/{fig:name9-mat}}}
+    
+    \caption{Figures}
+    \label{fig:myfigures-mat}
+\end{figure}
+
 \end{document}
