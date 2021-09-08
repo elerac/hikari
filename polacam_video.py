@@ -14,11 +14,12 @@ def main():
     while True:
         ret, frame = cap.read()
         
-        img_demosaiced = pa.demosaicing(frame)
+        img_demosaiced = pa.demosaicing(frame, pa.COLOR_PolarMono)
+        
         img_demosaiced = cv2.resize(img_demosaiced, None, fx=scale, fy=scale)
 
-        radians = np.array([0, np.pi/4, np.pi/2, np.pi*3/4])
-        img_stokes = pa.calcStokes(img_demosaiced, radians)
+        angles = np.deg2rad([0, 45, 90, 135])
+        img_stokes = pa.calcStokes(img_demosaiced, angles)
 
         img_intensity = pa.cvtStokesToIntensity(img_stokes)
         img_DoLP      = pa.cvtStokesToDoLP(img_stokes)
