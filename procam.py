@@ -2,29 +2,24 @@
 プロジェクタ&カメラを動かす．
 例として，Nayarらの高周波照明を投影して，直接成分と大域成分を分離する．
 """
-# 外部モジュール
 import cv2
 import numpy as np
 import os
-# 自作ソフトウェア関連
 import structuredlight as sl
 import polanalyser as pa
-# 自作ハードウェア関連
 import PySpin
 import EasyPySpin
 from fullscreen import FullScreen
 
 def main():
-    # 出力するフォルダ名
     dir_name = "mac_hf5x5"
     os.makedirs(dir_name, exist_ok=True)
 
-    # カメラの設定
     cap = EasyPySpin.VideoCaptureEX(0)
     #cap.set(cv2.CAP_PROP_GAMMA, 1.0)
     cap.set(cv2.CAP_PROP_EXPOSURE, 10000)
     cap.set(cv2.CAP_PROP_GAIN, 0.0)
-    cap.average_num = 4 # 平均化させる枚数，ノイズ耐性を上げる
+    cap.average_num = 4
     t_min = 100
     t_max = 200000
     t_min = 1000
